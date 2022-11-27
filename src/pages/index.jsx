@@ -17,5 +17,5 @@ export function Analytics(){
 }
 
 export function Admin(){
-    return <h2>Admin page (private, permission:"analytics")</h2>
+    return <h2>Admin page (private, role:"admin")</h2>
 }

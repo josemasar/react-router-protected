@@ -5,7 +5,12 @@ import {ProtectedRoute} from "./components/ProtectedRoute.jsx"
 function App() {
 
 const [user, setUser] = useState(null)
-const logIn = () => setUser({id:1,name:"josema"})
+const logIn = () => setUser({
+  id:1,
+  name:"josema", 
+  permissions: ["analytics"],
+  roles: ["admin"]
+})
 const logOut = () => setUser(null)
 
   return (
@@ -17,12 +22,25 @@ const logOut = () => setUser(null)
       <Routes>
         <Route index element={<Landing />} />
         <Route path="/landing" element={<Landing />} />
-        <Route element={<ProtectedRoute user={user} />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={
+          <ProtectedRoute isAllowed={!!user} />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route element={
+          <ProtectedRoute 
+          isAllowed={!!user && user.permissions.includes("analytics")} 
+          redirectTo={"/home/"}
+          />}>
+            <Route path="/analytics" element={<Analytics />} />
+        </Route>
+      <Route element={
+        <ProtectedRoute 
+          isAllowed={!!user && user.roles.includes("admin")} 
+          redirectTo={"/home/"}
+          />}>
+          <Route path="/admin" element={<Admin />} />
+          </Route>
       </Routes>
     </BrowserRouter>
   )
